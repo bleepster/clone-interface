@@ -17,14 +17,18 @@ IFCLONE="ifclone"
 
 if [ -n "$1" ]; then
 else
-  echo "usage: ./clone_if.sh <interface> <max number of clones>"
+  echo "usage: ./clone_if.sh <interface> <max number of clones> <bridge name>"
   exit
 fi
 
 if [ -n "$2" ]; then
 else
-  echo "usage: ./clone_if.sh <interface> <max number of clones>"
+  echo "usage: ./clone_if.sh <interface> <max number of clones> <bridge name>"
   exit
+fi
+
+if [ -n "$3" ]; then
+  BRDG=$3
 fi
 
 PHYS_IF=$1
