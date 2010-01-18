@@ -59,9 +59,7 @@ LNUM=$(($LNUM+1))
 echo "bridge created"
 echo "physical interface's ng_ehter node attached to the bridge"
 
-if [ -f ${NGCMD_FILE} ]; then
-  ${RM} ${NGCMD_FILE}
-fi 
+${RM} ${NGCMD_FILE}
 ${TOUCH} ${NGCMD_FILE}
 
 ## attach ng_eiface nodes to the ng_bridge node ##
@@ -82,9 +80,7 @@ ${NGCTL} msg ${PHYS_IF}: setautosrc 0 || exit 1
 ${NGCTL} msg ${PHYS_IF}: setpromisc 1 || exit 1
 echo "physical interface configured"
 
-if [ -f ${MACGEN_FILE} ]; then
-  ${RM} ${MACGEN_FILE}
-fi 
+${RM} ${MACGEN_FILE}
 ${TOUCH} ${MACGEN_FILE}
 
 ## generate random MAC addresses ##
