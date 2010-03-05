@@ -9,6 +9,9 @@ SED="/usr/bin/sed"
 HEAD="/usr/bin/head"
 SHA256="/sbin/sha256"
 DEVRANDOM="/dev/random"
+GREP="/usr/bin/grep"
+XARGS="/usr/bin/xargs"
+AWK="/usr/bin/awk"
 
 BRDG="nbridge0"
 NGCMD_FILE="./ngcmd.file"
@@ -47,6 +50,9 @@ echo "modules loaded"
 
 ## temporarily put down physical interface ##
 ${IFCONFIG} ${PHYS_IF} delete
+## special case for IPv6 address
+${IFCONFIG} ${PHYS_IF} | ${GREP} inet6 | ${AWK} '{print $2};' | ${XARGS} -I addr\
+  ${IFCONFIG} ${PHYS_IF} inet6 addr delete
 ${IFCONFIG} ${PHYS_IF} down
 echo "physical interface brought down"
 
