@@ -12,6 +12,7 @@ DEVRANDOM="/dev/random"
 GREP="/usr/bin/grep"
 XARGS="/usr/bin/xargs"
 AWK="/usr/bin/awk"
+SYSCTL="/sbin/sysctl"
 
 BRDG="nbridge0"
 NGCMD_FILE="./ngcmd.file"
@@ -49,11 +50,11 @@ done
 echo "modules loaded"
 
 ## temporarily put down physical interface ##
+${IFCONFIG} ${PHYS_IF} down
 ${IFCONFIG} ${PHYS_IF} delete
 ## special case for IPv6 address
 ${IFCONFIG} ${PHYS_IF} | ${GREP} inet6 | ${AWK} '{print $2}' | ${XARGS} -I addr\
   ${IFCONFIG} ${PHYS_IF} inet6 addr delete
-${IFCONFIG} ${PHYS_IF} down
 echo "physical interface brought down"
 
 ## create ng_bridge node ##
@@ -99,6 +100,10 @@ while [ ${MACCOUNT} -lt ${MAX_CLONES} ]; do
 done
 echo "MAC addresses generated"
 
+# Disable IPv6 auto linklocal before we put the interfaces UP
+# this forces manual configuration of interfaces
+${SYSCTL} net.inet6.ip6.auto_linklocal=0
+
 ## assign unique (hopefully)  MAC addresses for each ngeth(N) interface ##
 ## UP all ngeth(N) interfaces ##
 COUNT=0
@@ -116,3 +121,5 @@ ${RM} ${MACGEN_FILE}
 ## UP physical interface ##
 ${IFCONFIG} ${PHYS_IF} up || exit 1
 echo "physical interface up and running"
+
+${SYSCTL} net.inet6.ip6.auto_linklocal=1
